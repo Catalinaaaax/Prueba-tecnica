@@ -1,37 +1,31 @@
-import Logo from '../assets/Imagologo_motion.svg';
-import Telefono from '../assets/Telefono-01.png';
+import React from "react";
+import "../index.css";
+import phoneImage from "../assets/Telefono-01.png";
+import logoImage from "../assets/Imagologo_motion.svg";
 
-export default function Home() {
+const Home = () => {
   return (
-    <div className="home-landing">
-      <img src={Logo} alt="Logo Motion" className="logo-top" />
-      <div className="main-content">
-        <div className="hero-stack-container">
-          <h1 className="hero-title">
-            <span className="title-left">BIEN</span>
-            <span className="title-right">IDO A</span>
-          </h1>
-          <img src={Telefono} alt="Teléfono" className="telefono-stack-img" />
-          <h2 className="hero-subtitle">
-            MONITORING INNOVATION
-          </h2>
-        </div>
+    <div className="home-container">
+      {/* Texto de fondo */}
+      <div className="text-background">
+        <div className="main-title">BIENVENIDO A</div>
       </div>
-      <div className="footer-links">
-        <a href="https://monitoringinnovation.com/" target="_blank" rel="noopener noreferrer">
-          MONITORINGINNOVATION
-        </a>
-        <a href="https://gpscontrol.co/" target="_blank" rel="noopener noreferrer">
-          GPS CONTROL
-        </a>
-        <a href="https://github.com/TU_REPO_FRONTEND" target="_blank" rel="noopener noreferrer">
-          Link repo front
-        </a>
-        <a href="https://github.com/TU_REPO_BACKEND" target="_blank" rel="noopener noreferrer">
-          Link repo back
-        </a>
+
+      {/* Texto por delante de la imagen */}
+      <div className="subtitle">MONITORING INNOVATION</div>
+
+      {/* Imagen del teléfono */}
+      <img src={phoneImage} alt="Phone" className="phone-img" />
+
+      {/* Enlaces inferiores */}
+      <div className="links">
+        <a href="https://monitoringinnovation.com/" target="_blank">MONITORINGINNOVATION</a>
+        <a href="https://gpscontrol.co/" target="_blank">GPS CONTROL</a>
+        <a href="https://github.com/Catalinaaaax/Prueba-tecnica/tree/main/FRONT"target="_blank">Link repo front</a>
+        <a href="https://github.com/Catalinaaaax/Prueba-tecnica/tree/main/BACKEND}"target="_blank">Link repo back</a>
       </div>
-      <div className="curve-shadow"></div>
     </div>
   );
-}
+};
+
+export default Home;

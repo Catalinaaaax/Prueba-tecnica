@@ -1,7 +1,7 @@
 import IconEditar from "../assets/Icon_editar.svg";
 import IconEliminar from "../assets/Icon_eliminar.svg";
-import IconConfirmar from "../assets/Icon_confirmar.svg";
-import IconCancelar from "../assets/Icon_cancelar.svg";
+import IconConfirmar from "../assets/Icon_confirmar.svg"; // Icono de confirmar para la fila
+import IconCancelar from "../assets/Icon_cancelar.svg";   // Icono de cancelar para la fila
 import IconPersona from "../assets/Icon_persona.svg";
 import IconButton from "./IconButton";
 
@@ -9,19 +9,21 @@ import IconButton from "./IconButton";
  * Tabla CRUD para mostrar y gestionar usuarios.
  * Props:
  * - rows: array de usuarios
- * - onEdit: click editar
- * - onDelete: click eliminar
- * - onConfirm: click confirmar edición
- * - onCancel: click cancelar edición
- * - editingRowIndex: índice de la fila en edición
+ * - onEdit: función para iniciar la edición de una fila (recibe el índice)
+ * - onDelete: función para eliminar una fila (recibe el índice)
+ * - editingRowIndex: índice de la fila actualmente en edición
+ * - isAnyRowEditing: boolean, true si alguna fila está siendo editada (para deshabilitar otros botones de editar)
+ * - onConfirmEdit: función a llamar cuando se presiona el icono de confirmar en la fila (usualmente handleSubmit del CrudPage)
+ * - onCancelEdit: función a llamar cuando se presiona el icono de cancelar en la fila (usualmente handleCancel del CrudPage)
  */
 const CrudTable = ({
   rows,
   onEdit,
   onDelete,
-  onConfirm,
-  onCancel,
   editingRowIndex,
+  isAnyRowEditing,
+  onConfirmEdit,
+  onCancelEdit,
 }) => (
   <table className="crud-table">
     <thead>
@@ -34,7 +36,7 @@ const CrudTable = ({
     </thead>
     <tbody>
       {rows.map((row, i) => (
-        <tr key={i}>
+        <tr key={row.id || i}> {/* Usar row.id como key si está disponible y es único */}
           <td>{row.marca}</td>
           <td>{row.sucursal}</td>
           <td>
@@ -50,18 +52,18 @@ const CrudTable = ({
             {editingRowIndex === i ? (
               <>
                 <IconButton
-                  icon={IconConfirmar}
-                  alt="Confirmar"
+                  icon={IconConfirmar} // Icono de confirmar de la fila
+                  alt="Confirmar Cambios"
                   color="blue"
-                  onClick={() => onConfirm(i)}
-                  title="Confirmar"
+                  onClick={onConfirmEdit} // Llama directamente a la función del CrudPage
+                  title="Confirmar Cambios"
                 />
                 <IconButton
-                  icon={IconCancelar}
-                  alt="Cancelar"
+                  icon={IconCancelar} // Icono de cancelar de la fila
+                  alt="Cancelar Edición"
                   color="pink"
-                  onClick={() => onCancel(i)}
-                  title="Cancelar"
+                  onClick={onCancelEdit} // Llama directamente a la función del CrudPage
+                  title="Cancelar Edición"
                 />
               </>
             ) : (
@@ -71,6 +73,7 @@ const CrudTable = ({
                   alt="Editar"
                   color="blue"
                   onClick={() => onEdit(i)}
+                  disabled={isAnyRowEditing && editingRowIndex !== i} // Deshabilitar si otra fila se está editando
                   title="Editar"
                 />
                 <IconButton
@@ -78,6 +81,7 @@ const CrudTable = ({
                   alt="Eliminar"
                   color="pink"
                   onClick={() => onDelete(i)}
+                  disabled={isAnyRowEditing} // Opcional: deshabilitar eliminar mientras se edita otra fila
                   title="Eliminar"
                 />
               </>

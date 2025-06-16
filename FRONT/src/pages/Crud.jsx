@@ -1,70 +1,141 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FormCard from '../components/FormCard';
 import CrudTable from '../components/CrudTable';
 import IconUbicacion from "../assets/Icon_puntoubicacion.svg";
-import '../index.css'; // o '../styles/main.css' si prefieres
+import IconConfirmarBoton from "../assets/Icon_confirmar.svg"; // Icono para el botón de confirmar del formulario
+import IconCancelarBoton from "../assets/Icon_cancelar.svg";   // Icono para el botón de cancelar del formulario
+import '../index.css';
 
-const initialRows = [
-  { marca: 'Mazda', sucursal: 'Chapinero', aspirante: 'David Sandoval' },
-  { marca: 'Mercedes', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Ford', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Renault', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Chevrolet', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Volkswagen', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Susuki', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'KIA', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Hyunday', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Honda', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-  { marca: 'Volvo', sucursal: 'Localidad', aspirante: 'Nombre Apellido' },
-];
+const API_URL = 'http://localhost:8000/api';
+const initialFormState = { id: null, marca: '', sucursal: '', aspirante: '' };
 
 const CrudPage = () => {
-  const [rows, setRows] = useState(initialRows);
-  const [form, setForm] = useState({ marca: '', sucursal: '', aspirante: '' });
+  const [rows, setRows] = useState([]);
+  const [form, setForm] = useState(initialFormState);
   const [editingRowIndex, setEditingRowIndex] = useState(null);
+  const [isAnyRowEditing, setIsAnyRowEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Para carga inicial de datos
+  const [isSaving, setIsSaving] = useState(false);   // Para estado de envío del formulario
+  const [error, setError] = useState(null);
 
-  // Maneja cambios en los inputs
+  useEffect(() => {
+    const fetchConcesionarios = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`${API_URL}/concesionarios`);
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        setRows(data);
+      } catch (e) {
+        console.error("Error al obtener concesionarios:", e);
+        setError(e.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchConcesionarios();
+  }, []);
+
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  // Crear nuevo registro
-  const handleSubmit = e => {
-    e.preventDefault();
-    if (!form.marca || !form.sucursal || !form.aspirante) return;
-    if (editingRowIndex !== null) {
-      // Editar
-      handleEditConfirm();
-    } else {
-      // Crear
-      setRows([...rows, { ...form }]);
-      setForm({ marca: '', sucursal: '', aspirante: '' });
+  const handleSubmit = async (e) => {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault(); // Prevenir solo si es un evento de formulario real
+    }
+    if (!form.marca || !form.sucursal || !form.aspirante) {
+      alert("Todos los campos son obligatorios.");
+      return;
+    }
+
+    const payload = { marca: form.marca, sucursal: form.sucursal, aspirante: form.aspirante };
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      let response;
+      let responseData;
+
+      if (form.id) {
+        response = await fetch(`${API_URL}/concesionarios/${form.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error(`Error al actualizar: ${response.status} ${response.statusText}`);
+        responseData = await response.json();
+        setRows(rows.map(row => (row.id === responseData.id ? responseData : row)));
+      } else {
+        response = await fetch(`${API_URL}/concesionarios`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error(`Error al crear: ${response.status} ${response.statusText}`);
+        responseData = await response.json();
+        setRows([...rows, responseData]);
+      }
+      handleCancel(); // Resetear formulario y estados de edición
+    } catch (err) {
+      console.error("Error al enviar el formulario:", err);
+      setError(err.message);
+      alert(`Error: ${err.message}`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  // Confirmar edición (separado para claridad)
-  const handleEditConfirm = () => {
-    const updated = [...rows];
-    updated[editingRowIndex] = { ...form };
-    setRows(updated);
-    setEditingRowIndex(null);
-    setForm({ marca: '', sucursal: '', aspirante: '' });
-  };
-
-  // Editar fila
   const handleEdit = idx => {
-    setForm(rows[idx]);
+    const recordToEdit = rows[idx];
+    setForm({
+      id: recordToEdit.id,
+      marca: recordToEdit.marca,
+      sucursal: recordToEdit.sucursal,
+      aspirante: recordToEdit.aspirante
+    });
     setEditingRowIndex(idx);
+    setIsAnyRowEditing(true);
   };
 
-  // Cancelar edición o formulario
   const handleCancel = () => {
     setEditingRowIndex(null);
-    setForm({ marca: '', sucursal: '', aspirante: '' });
+    setForm(initialFormState);
+    setIsAnyRowEditing(false);
   };
 
-  // Eliminar fila
-  const handleDelete = idx => {
-    setRows(rows.filter((_, i) => i !== idx));
-    handleCancel();
+  const handleDelete = async idx => {
+    const recordToDelete = rows[idx];
+    if (!recordToDelete || !recordToDelete.id) {
+      alert("Error: No se puede eliminar un registro sin ID.");
+      return;
+    }
+
+    if (window.confirm(`¿Está seguro de que desea eliminar el concesionario ${recordToDelete.marca} - ${recordToDelete.aspirante}?`)) {
+      setIsSaving(true); // Usar isSaving también para la operación de borrado para deshabilitar botones
+      setError(null);
+      try {
+        const response = await fetch(`${API_URL}/concesionarios/${recordToDelete.id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          let errorBody = '';
+          try { errorBody = await response.text(); } catch (e) { /* ignorar */ }
+          throw new Error(`Error al eliminar: ${response.status} ${response.statusText}. ${errorBody}`);
+        }
+        setRows(rows.filter(row => row.id !== recordToDelete.id));
+        if (form.id === recordToDelete.id) {
+          handleCancel();
+        }
+      } catch (err) {
+        console.error("Error al eliminar el registro:", err);
+        setError(err.message);
+        alert(`Error: ${err.message}`);
+      } finally {
+        setIsSaving(false);
+      }
+    }
   };
 
   return (
@@ -74,18 +145,30 @@ const CrudPage = () => {
         onChange={handleChange}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
-        editMode={editingRowIndex !== null}
+        editMode={form.id !== null}
+        isSubmitting={isSaving} // Usar isSaving para el estado de envío
+        isRowEditingActive={isAnyRowEditing} // Para cambiar botones del formulario a iconos
+        iconConfirmarSrc={IconConfirmarBoton} // Ruta al icono de confirmar
+        iconCancelarSrc={IconCancelarBoton}   // Ruta al icono de cancelar
       />
       <div>
-        <CrudTable
-          rows={rows}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onConfirm={handleEditConfirm}
-          onCancel={handleCancel}
-          editingRowIndex={editingRowIndex}
-        />
-        <div style={{ textAlign: 'center', marginTop: '2rem', color: 'var(--grey-1)' }}>
+        {isLoading && rows.length === 0 && <p>Cargando concesionarios...</p>}
+        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+
+        {(!isLoading || rows.length > 0) && !error && (
+          <CrudTable
+            rows={rows}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            editingRowIndex={editingRowIndex}
+            isAnyRowEditing={isAnyRowEditing}
+            onConfirmEdit={handleSubmit} // Conectar icono de confirmar de la fila al submit del formulario
+            onCancelEdit={handleCancel}   // Conectar icono de cancelar de la fila al cancel del formulario
+          />
+        )}
+        {rows.length === 0 && !isLoading && !error && <p>No hay concesionarios para mostrar.</p>}
+
+        <div style={{ textAlign: 'center', marginTop: '2rem', color: 'var(--grey-main)' }}>
           <img src={IconUbicacion} alt="Ubicación" width="20" style={{ marginRight: '5px' }} />
           Datos ubicados en el sistema general de usuarios
         </div>
