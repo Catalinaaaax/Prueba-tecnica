@@ -1,8 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Prueba-tecnica/', // Asegúrate que coincida con el nombre de tu repositorio
+  base: '/Prueba-tecnica/',
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        '404': resolve(__dirname, 'index.html'),
+      }
+    }
+  }
 })
