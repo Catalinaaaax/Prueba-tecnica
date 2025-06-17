@@ -1,336 +1,892 @@
+
 @media (prefers-color-scheme: dark) {
   body, html, #root {
-    background-color: #fff !important;
-    color: #000 !important;
+    background-color: #fff !important; /* Fondo blanco, ¡importante para anular otros estilos! */
+    color: #000 !important; /* Texto negro, ¡importante también! */
   }
 }
 
-
+/*
+  Variables CSS globales (Custom Properties).
+  Aquí definimos nuestra paleta de colores principal y algunos valores reutilizables
+  como sombras y la fuente por defecto. Facilita mucho el mantenimiento y
+  la consistencia del diseño.
+*/
 :root {
-  --pink-main: #e280be;
-  --blue-main: #40cee4;
-  --grey-main: #c5c5c5;
-  --grey-dark: #888;
-  --background: #fafafa;
-  --white: #fff;
-  --shadow: 0 2px 12px rgba(100,100,100,0.09);
-  font-family: 'Montserrat', sans-serif;
+  --pink-main: #e280be;       /* Rosa principal, usado en elementos destacados y modales */
+  --blue-main: #40cee4;       /* Azul principal, para botones de creación y enlaces */
+  --grey-main: #c5c5c5;       /* Gris claro, para bordes de inputs y separadores */
+  --grey-dark: #888;          /* Gris oscuro, para texto secundario y contenido de tablas */
+  --background: #fafafa;      /* Color de fondo general para páginas como el CRUD */
+  --white: #fff;              /* Blanco puro, para tarjetas y texto sobre fondos oscuros */
+  --shadow: 0 2px 12px rgba(100,100,100,0.09); /* Sombra sutil por defecto para elementos elevados */
+  font-family: 'Montserrat', sans-serif; /* Fuente principal para toda la aplicación */
 }
 
 /* ----------- LANDING PAGE / HOME ----------- */
-/* ----------- LANDING PAGE / HOME ----------- */
+/* Estos comentarios dobles son un clásico, ¡no los quitemos! :D */
 
-/* Estilo base */
+/* Estilo base para el body.
+   Reseteamos márgenes y padding, definimos la fuente por defecto (aunque ya está en :root)
+   y un fondo blanco base.
+*/
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif; /* Redundante si :root lo aplica globalmente, pero no hace daño */
   background-color: white;
 }
 
-/* Contenedor principal */
+/* Contenedor principal de la Home Page.
+   Ocupa toda la altura de la ventana (100vh) y centra el contenido.
+   Tiene una transición suave para el cambio de imagen de fondo.
+*/
 .home-container {
-  position: relative;
+  position: relative; /* Necesario para posicionar elementos hijos de forma absoluta */
   text-align: center;
   height: 100vh;
-  overflow: hidden;
+  overflow: hidden; /* Evita barras de scroll si algo se desborda */
+  /* Estilos para el fondo y la transición */
+  background-size: cover; /* La imagen de fondo cubre todo el contenedor */
+  background-position: center; /* Centra la imagen de fondo */
+  background-repeat: no-repeat; /* Evita que la imagen de fondo se repita */
+  transition: background-image 1s ease-in-out; /* Transición suave para el cambio de imagen de fondo (si se usa JS para cambiarla) */
 }
 
-/* Logo superior izquierdo */
+/* Logo superior izquierdo.
+   Posicionado de forma absoluta en la esquina superior izquierda.
+   El z-index: 10 asegura que esté por encima de la mayoría de los elementos.
+*/
 .logo {
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 50px;
+  width: 50px; /* Tamaño fijo para el logo */
   z-index: 10;
 }
 
-/* Contenedor del texto detrás de la imagen */
+/* Contenedor del texto que va DETRÁS de la imagen del teléfono.
+   Centrado en la pantalla usando transformaciones.
+   z-index: 1 lo coloca detrás de .phone-img (que tiene z-index: 2).
+   pointer-events: none para que no interfiera con clics a elementos detrás.
+*/
 .text-background {
   position: absolute;
-  top: 47.2%; /* Centrado vertical */
+  top: 46.2%; /* Ajuste fino para centrar verticalmente */
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1; /* Detrás de la imagen */
+  z-index: 1;
   width: 100%;
   text-align: center;
-  pointer-events: none; /* Para que no bloquee interacciones */
+  pointer-events: none;
 }
 
+/* Título principal ("RING") dentro de .text-background.
+   Tamaño de fuente grande y color específico.
+*/
 .text-background .main-title {
-  font-size: 3.8rem; /* Cambia este valor para aumentar el tamaño */
-  color: #00249C;
+  font-size: 5.5rem;
+  color: #00249C; /* Azul oscuro específico para este título */
   font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
+  font-weight: 700; /* Bold */
   margin: 0;
   letter-spacing: 2px;
 }
 
-/* Estilo para "MONITORING INNOVATION" que debe estar DELANTE de la imagen */
+/* Estilo para el subtítulo "MONITORING INNOVATION".
+   Este texto debe estar DELANTE de la imagen del teléfono.
+   Centrado y con z-index: 3 para asegurar que esté encima de .phone-img.
+*/
 .subtitle {
   position: absolute;
-  top: 70%; /* Ajusta este valor para moverlo más abajo */
+  top: 55%; /* Ligeramente por debajo del centro vertical */
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 3; /* Delante de la imagen */
-  font-size: 2rem; /* Puedes aumentar este valor si lo deseas */
-  color: #00249C;
+  z-index: 3;
+  font-size: 3.3rem;
+  color: #00249C; /* Mismo azul que el título de fondo */
   font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
+  font-weight: 700; /* Bold */
   margin: 0;
   letter-spacing: 2px;
+  white-space: nowrap; /* Evita que el texto se parta en dos líneas */
 }
 
-/* Imagen por delante del texto de fondo, pero detrás de .subtitle */
+/*
+  Efecto de borde para la parte "RING INN" del subtítulo.
+  Se logra aplicando múltiples text-shadows desplazadas con color blanco.
+  Esto simula un contorno alrededor del texto, haciéndolo destacar sobre la imagen.
+*/
+.subtitle .highlight-ringinn {
+  text-shadow:
+    -2px -2px 0 #fff,
+     2px -2px 0 #fff,
+    -2px  2px 0 #fff,
+     2px  2px 0 #fff,
+    -2px  0px   0 #fff,
+     2px  0px   0 #fff,
+     0px   -2px 0 #fff,
+     0px    2px 0 #fff;
+  /* El color del texto (#00249C) se hereda de .subtitle */
+}
+
+
+/* Imagen del teléfono.
+   Centrada en la pantalla y con z-index: 2, la sitúa entre
+   .text-background (z-index: 1) y .subtitle (z-index: 3).
+*/
 .phone-img {
   position: absolute;
-  top: 50%;           /* Centra la imagen verticalmente en el contenedor padre */
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;         /* Entre el texto de fondo y el título principal */
-  width: 400px;
-  max-width: 90%;
+  z-index: 2;
+  width: 400px; /* Ancho base de la imagen */
+  max-width: 90%; /* Asegura que no se desborde en pantallas pequeñas */
 }
 
-/* Enlaces inferiores */
+/* Enlaces inferiores (ej. "Login", "Register").
+   Posicionados de forma absoluta en la parte inferior central.
+   Usamos flexbox para distribuirlos con un espacio (`gap`) entre ellos.
+*/
 .links {
   position: absolute;
   bottom: 30px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); /* Centrado horizontal exacto */
   display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
+  gap: 5rem; /* Espacio generoso entre enlaces */
+  flex-wrap: wrap; /* Permite que los enlaces pasen a la siguiente línea si no caben */
 }
 
 .links a {
-  color: #00c4ff;
-  text-decoration: none;
+  color: #00c4ff; /* Azul brillante para los enlaces */
+  text-decoration: none; /* Sin subrayado */
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 500; /* Semi-bold */
 }
 
 .links a:hover {
-  color: #008ecf;
+  color: #008ecf; /* Azul un poco más oscuro al pasar el ratón */
 }
 
-/* 🔁 Responsive para pantallas pequeñas */
+/* 🔁 Responsive para pantallas pequeñas (hasta 768px de ancho) */
 @media (max-width: 768px) {
-  .main-title {
+  /* Reducimos el tamaño de fuente del título principal */
+  .main-title { /* Ojo, este .main-title no está cualificado con .text-background, podría afectar a otros si existe */
     font-size: 2rem;
   }
 
+  /* Ajustamos el subtítulo: menor tamaño y posición */
   .subtitle {
     font-size: 1.2rem;
-    top: 60%;
+    top: 60%; /* Lo bajamos un poco más */
   }
 
+  /* Reducimos el tamaño de la imagen del teléfono */
   .phone-img {
     width: 280px;
   }
 
+  /* Los enlaces inferiores se apilan verticalmente y reducimos el espacio */
   .links {
-    flex-direction: column;
-    gap: 0.8rem;
-    bottom: 20px;
+    flex-direction: column; /* Apilados */
+    gap: 0.8rem; /* Menos espacio */
+    bottom: 20px; /* Un poco más arriba */
   }
 }
 
 
-
 /* ----------- CRUD PAGE ----------- */
+/* Estilos específicos para la página del CRUD */
+
+/*
+  Estilos para el body en la página del CRUD.
+  Define un color de fondo usando nuestra variable --background.
+  min-height: 100vh asegura que el fondo cubra toda la altura visible.
+  NOTA: Hay una declaración de 'body' anterior. Sería bueno unificar o
+  asegurarse de que esta especificidad es intencional para la página CRUD
+  (quizás mediante una clase en el body de la página CRUD).
+*/
 body {
   background: var(--background);
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
+  margin: 0; /* Ya estaba reseteado, pero por si acaso */
+  font-family: 'Montserrat', sans-serif; /* También redundante si :root lo aplica */
   min-height: 100vh;
 }
 
+/* Layout principal de la página CRUD.
+   Centra el contenido (formulario y tabla) y añade un espacio entre ellos.
+   Padding superior para separarlo del borde de la ventana.
+*/
 .crud-layout {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 4rem;
+  justify-content: center; /* Centra los hijos horizontalmente */
+  align-items: flex-start; /* Alinea los hijos al inicio de su eje transversal (arriba) */
+  gap: 4rem; /* Espacio entre el formulario y la tabla */
   padding-top: 3rem;
 }
 
+/* Tarjeta del formulario.
+   Fondo blanco, bordes redondeados y una sombra pronunciada.
+   Padding interno para dar espacio al contenido.
+   Flexbox para alinear el sidebar de iconos y el formulario.
+   Transiciones suaves para el efecto hover.
+*/
 .form-card {
   background: var(--white);
   border-radius: 18px;
-  box-shadow: var(--shadow);
-  padding: 2rem 1.8rem;
+  box-shadow: 0 8px 25px rgba(100, 100, 100, 0.15); /* Sombra más notoria */
+  padding: 1.3rem 1rem;
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem; /* Espacio entre el sidebar de iconos y el formulario en sí */
   align-items: flex-start;
-  min-width: 320px;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
+/* Efecto hover para la tarjeta del formulario:
+   Se levanta ligeramente y la sombra se hace más pronunciada.
+*/
+.form-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(90, 90, 90, 0.2);
+}
+
+/* Sidebar dentro del formulario.
+   Contiene el icono de "crear" y los iconos de tipo de entidad (vehículo, ubicación, persona).
+   Organizados verticalmente y centrados.
+   Márgenes para ajustar su posición.
+*/
+.form-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 0.5rem;
+  margin-top: -0.9rem; /* Sube todo el bloque de iconos */
+}
+
+/* Icono de acción "Crear" (el SVG icon_crear.svg).
+   Tamaño reducido y márgenes para posicionarlo.
+   Cursor de tipo puntero y transición para el hover.
+*/
+.create-action-icon {
+  width: 22px;
+  height: 22px;
+  margin-left: -2.5rem; /* Lo mueve más a la izquierda, fuera del flujo normal del sidebar */
+  margin-top: 0.3rem;  /* Lo baja un poco */
+  cursor: pointer;
+  margin-bottom: 0.5rem; /* Espacio antes de los siguientes iconos */
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Animación "wiggle" para el icono de crear al hacer clic.
+   Da un feedback visual divertido.
+*/
+.create-action-icon:active {
+  animation: iconClickWiggle 0.4s ease-in-out;
+}
+
+@keyframes iconClickWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-8deg) scale(1.15); } /* Gira a la izquierda y agranda */
+  50% { transform: rotate(8deg) scale(1.15); }  /* Gira a la derecha y agranda */
+  75% { transform: rotate(-4deg) scale(1.1); }  /* Pequeña corrección */
+}
+
+/* Efecto hover para el icono de crear: se agranda un poco. */
+.create-action-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Contenedor para los iconos de tipo de entidad (vehículo, ubicación, persona).
+   Organizados verticalmente con espacio entre ellos.
+*/
 .form-icons {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin-right: 1rem;
-}
-.form-icons img {
-  width: 28px;
-  filter: grayscale(100%) brightness(0.5);
 }
 
+.form-icons img {
+  width: 28px; /* Tamaño de los iconos */
+  /* filter: grayscale(100%) brightness(0.5); <- Comentado para mostrar colores originales */
+}
+
+/* Animación para los iconos del sidebar del formulario cuando se activan (clase .icons-active).
+   Aparecen con un efecto "pop-in", escalando y haciéndose visibles.
+*/
+.form-icons.icons-active img {
+  animation: popInButton 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+  opacity: 0; /* Comienzan invisibles */
+  transform: scale(0.5); /* Comienzan más pequeños */
+}
+
+/* Retraso escalonado para la animación de los iconos.
+   Hace que aparezcan uno después del otro, creando un efecto más dinámico.
+*/
+.form-icons.icons-active img:nth-child(1) { /* IconVehiculo1 */
+  animation-delay: 0.05s;
+}
+.form-icons.icons-active img:nth-child(2) { /* IconUbicacion1 */
+  animation-delay: 0.1s;
+}
+.form-icons.icons-active img:nth-child(3) { /* IconPersona1 */
+  animation-delay: 0.15s;
+}
+
+/* Estilos para el <form> dentro de .form-card.
+   Los inputs se apilan verticalmente con espacio entre ellos.
+*/
 .form-card form {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
 
+/* Estilos para los <input> del formulario.
+   Bordes redondeados, padding interno, y un color de borde que cambia al enfocar.
+*/
 .form-card input {
   border: 2px solid var(--grey-main);
-  border-radius: 999px;
+  border-radius: 999px; /* Bordes completamente redondeados (píldora) */
   padding: 0.8rem 1.2rem;
   font-size: 1rem;
   color: var(--grey-dark);
-  outline: none;
-  width: 210px;
-  transition: border 0.2s;
-}
-.form-card input:focus {
-  border-color: var(--pink-main);
+  outline: none; /* Quitamos el outline por defecto del navegador */
+  width: 210px; /* Ancho fijo para los inputs */
+  transition: border 0.2s; /* Transición suave para el color del borde */
 }
 
+.form-card input:focus {
+  border-color: var(--pink-main); /* Borde rosa al enfocar */
+}
+
+/* Contenedor para los botones de acción del formulario (Cancelar, Confirmar).
+   Alineados a la derecha. Por defecto están ocultos.
+*/
 .form-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  justify-content: flex-end;
+  gap: 1rem; /* Espacio entre botones */
+  margin-top: 1rem; /* Espacio arriba, separándolos de los inputs */
+  justify-content: flex-end; /* Alinea los botones a la derecha */
+  display: none; /* Ocultos por defecto */
 }
+
+/* Clase para mostrar los botones de acción.
+   Cuando se añade .visible, los botones aparecen.
+*/
+.form-actions.visible {
+  display: flex;
+}
+
+/* Animación para los botones de acción cuando aparecen (clase .visible).
+   Usan la misma animación "popInButton" que los iconos.
+*/
+.form-actions.visible button {
+  animation: popInButton 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+/* Retraso escalonado para la animación de los botones. */
+.form-actions.visible button:nth-child(1) { /* Primer botón (Cancelar) */
+  animation-delay: 0.1s;
+}
+.form-actions.visible button:nth-child(2) { /* Segundo botón (Confirmar/Crear) */
+  animation-delay: 0.2s;
+}
+
+/* Keyframes para la animación "popInButton".
+   Hace que el elemento escale desde pequeño e invisible hasta su tamaño normal y visible.
+   La curva cúbica le da un efecto de "rebote".
+*/
+@keyframes popInButton {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Estilo para el botón "Cancelar".
+   Sin fondo, borde y texto rosa.
+*/
 .btn-cancel {
   background: none;
   color: var(--pink-main);
   border: 2px solid var(--pink-main);
-  border-radius: 999px;
+  border-radius: 999px; /* Píldora */
   padding: 0.6rem 1.5rem;
-  font-weight: 600;
+  font-weight: 600; /* Semi-bold */
   cursor: pointer;
   transition: background 0.15s;
 }
+
+/* Estilo para el botón "Crear" (o "Confirmar").
+   Sin fondo, borde y texto azul.
+*/
 .btn-create {
   background: none;
   color: var(--blue-main);
   border: 2px solid var(--blue-main);
-  border-radius: 999px;
+  border-radius: 999px; /* Píldora */
   padding: 0.6rem 1.5rem;
-  font-weight: 600;
+  font-weight: 600; /* Semi-bold */
   cursor: pointer;
   transition: background 0.15s;
 }
+
+/* Efecto hover para ambos tipos de botones: un fondo gris claro sutil. */
 .btn-cancel:hover, .btn-create:hover {
   background: #f3f3f3;
 }
 
+/* Tabla del CRUD.
+   border-collapse: separate y border-spacing para simular el espacio entre celdas
+   como si fueran tarjetas individuales, similar a la imagen de referencia.
+*/
 .crud-table {
-  border-collapse: collapse;
-  width: 560px;
-  background: var(--white);
-  font-size: 1.08rem;
+  border-collapse: separate;
+  border-spacing: 0 8px; /* 0 horizontal, 8px vertical para separar filas */
+  width: 100%; /* Ocupa el ancho disponible en su contenedor (.crud-layout) */
 }
+
+/* Encabezados de la tabla (<th>).
+   Fondo rosado, texto blanco, bordes redondeados.
+*/
 .crud-table th {
-  background: var(--pink-main);
-  color: #fff;
-  padding: 0.8rem 0;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  background-color: #e578b1; /* Un rosa específico, podría ser var(--pink-main) o una variante */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
 }
+
+/* Celdas de la tabla (<td>).
+   Línea rosa en la parte inferior para separar visualmente las filas.
+   Color de texto gris oscuro. Padding ajustado.
+*/
 .crud-table td {
-  border-bottom: 1.5px solid var(--pink-main);
+  border-bottom: 1px solid var(--pink-main);
   color: var(--grey-dark);
-  padding: 0.62rem 0.4rem;
+  padding: 0rem 10px; /* Poco padding vertical, más horizontal */
+  /* background: var(--white); <- Comentado, el fondo de la página es visible */
+  text-align: center; /* Centramos el contenido de las celdas, incluyendo los botones de icono */
 }
+
+/* Botones de icono (Editar, Eliminar en la tabla).
+   Sin borde ni fondo, forma circular.
+   Flexbox para centrar el icono SVG dentro del botón.
+   Transición para el hover.
+*/
 .icon-btn {
   border: none;
   background: none;
-  margin-left: 0.3rem;
+  margin-left: 0.3rem; /* Pequeño margen a la izquierda */
   width: 34px;
   height: 34px;
-  border-radius: 50%;
-  display: inline-flex;
+  border-radius: 50%; /* Circular */
+  display: inline-flex; /* Para que se comporte como un elemento de línea pero permita flexbox */
   align-items: center;
   justify-content: center;
   transition: background 0.15s;
   cursor: pointer;
 }
+
+/* Iconos azules (ej. Editar).
+   El filtro está comentado para usar el color original del SVG.
+*/
 .icon-btn.blue img {
-  filter: invert(56%) sepia(89%) saturate(477%) hue-rotate(147deg) brightness(86%) contrast(91%);
+  /* filter: invert(56%) sepia(89%) saturate(477%) hue-rotate(147deg) brightness(86%) contrast(91%); */
 }
+
+/* Iconos rosas (ej. Eliminar).
+   Filtro CSS para colorear el SVG de rosa.
+   Estos filtros son útiles si los SVGs son monocromáticos (negros o blancos).
+*/
 .icon-btn.pink img {
   filter: invert(56%) sepia(16%) saturate(3018%) hue-rotate(292deg) brightness(97%) contrast(97%);
 }
+
+/* Efecto hover para los botones de icono: un fondo rosa muy claro. */
 .icon-btn:hover {
   background: #f3e4ec;
 }
 
-.hero-title-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 60px;
+/* --- ANIMACIONES DIVERTIDAS PARA DESAPARICIÓN --- */
+/* Estas animaciones se usan cuando los elementos se ocultan,
+   por ejemplo, al cancelar la edición en el formulario.
+*/
+
+/* Animación para botones de texto (Cancelar, Crear) cuando desaparecen.
+   "Vuelan" hacia abajo, se encogen, rotan y se desvanecen.
+*/
+@keyframes flyOutAndFadeButton {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  30% { /* Pequeño "salto" o preparación */
+    transform: translateY(-10px) scale(1.05) rotate(-5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.4) rotate(20deg);
+    visibility: hidden; /* Importante para que no sean interactuables después de la animación */
+  }
 }
 
+/* Animación para botones de icono (ej. en la tabla) cuando desaparecen.
+   Se encogen, rotan, se desplazan y se desvanecen.
+*/
+@keyframes flyOutAndFadeIcon {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  30% { /* Pequeño "agrandamiento" o preparación */
+    transform: scale(1.2) rotate(-10deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(45deg) translateX(30px);
+    visibility: hidden;
+  }
+}
+
+/* Aplicar la animación de desaparición a los botones del formulario
+   cuando su contenedor .form-actions tiene la clase .hiding.
+*/
+.form-actions.hiding .btn-cancel,
+.form-actions.hiding .btn-create {
+  animation: flyOutAndFadeButton 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+/* Aplicar la animación de desaparición a los botones de icono
+   cuando tienen la clase .hiding.
+*/
+.icon-btn.hiding {
+  animation: flyOutAndFadeIcon 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+/* Animación "wiggle" para los botones de editar/eliminar en la tabla al hacer clic.
+   Reutilizamos la animación iconClickWiggle definida antes, pero con duración más corta.
+*/
+.crud-table .icon-btn.blue:active,
+.crud-table .icon-btn.pink:active {
+  animation: iconClickWiggle 0.3s ease-in-out;
+}
+
+/* Ajustes de tamaño para los iconos de editar/eliminar en la tabla CRUD.
+   Los hacemos un poco más pequeños que su tamaño base en .icon-btn img (si lo tuviera).
+*/
+.crud-table .icon-btn.blue img { /* Icono Editar */
+  width: 24px;
+  height: 24px;
+}
+.crud-table .icon-btn.pink img { /* Icono Eliminar */
+  width: 24px;
+  height: 24px;
+}
+
+/* Animación de flotación para ImagoLogotipo_motion.svg (probablemente el logo en la home).
+   Hace que el elemento suba y baje suavemente de forma continua.
+*/
+@keyframes floatAnimation {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px); /* Altura de la flotación */
+  }
+}
+
+/* Clase para aplicar la animación de flotación. */
+.imagotipo-animated {
+  animation: floatAnimation 4s ease-in-out infinite; /* Duración 4s, repetición infinita */
+}
+
+/*
+  Estilos para un título de héroe alternativo o sección.
+  Parece ser una composición diferente a la de .home-container.
+*/
+.hero-title-container {
+  position: relative; /* Para z-index y posicionamiento de hijos */
+  display: flex;
+  flex-direction: column; /* Título y subtítulo apilados */
+  align-items: center; /* Centrados horizontalmente */
+  margin-top: 60px; /* Espacio superior */
+}
+
+/* Título principal de la sección héroe.
+   Fuente grande, color azul, y centrado.
+   Usa flex para alinear partes del título con una imagen en medio.
+   z-index: 2 para estar por encima de elementos de fondo.
+*/
 .hero-title {
   font-size: 84px;
-  color: #0033a1;
-  font-weight: 800;
+  color: #0033a1; /* Otro azul oscuro */
+  font-weight: 800; /* Extra-bold */
   text-align: center;
   letter-spacing: 2px;
-  line-height: 1;
+  line-height: 1; /* Ajustado para fuentes grandes */
   display: flex;
-  align-items: center;
+  align-items: center; /* Alinea verticalmente el texto y la imagen del teléfono */
   justify-content: center;
   position: relative;
   z-index: 2;
 }
 
+/* Clases para las partes izquierda y derecha del título, si se divide. */
 .title-left, .title-right {
   display: inline-block;
 }
 
+/* Contenedor para la imagen del teléfono DENTRO del título héroe.
+   Permite posicionar la imagen y darle un z-index alto para que
+   se superponga correctamente si es necesario.
+   Margen para separar la imagen del texto.
+*/
 .telefono-img-container {
-  display: inline-block;
+  display: inline-block; /* Para que fluya con el texto */
   position: relative;
-  z-index: 10;
-  margin: 0 12px;
-  /* Ajusta el margen para separar el texto */
+  z-index: 10; /* Encima del texto si hay superposición */
+  margin: 0 12px; /* Espacio horizontal alrededor de la imagen */
 }
 
+/* Imagen del teléfono dentro del título héroe.
+   Altura fija, sombra y ajuste vertical.
+*/
 .telefono-img {
-  height: 140px;       /* Ajusta según la proporción de tu diseño */
-  width: auto;
+  height: 140px;
+  width: auto; /* Mantiene la proporción */
   position: relative;
-  top: 8px;            /* Ajusta para alinear verticalmente */
-  box-shadow: 0 8px 32px 0 rgba(40,40,80,0.13);
+  top: 8px; /* Ajuste vertical fino para alinear con el texto */
+  box-shadow: 0 8px 32px 0 rgba(40,40,80,0.13); /* Sombra suave */
 }
 
+/* Subtítulo de la sección héroe.
+   Fuente grande, mismo color azul, centrado.
+   z-index para asegurar su correcta superposición.
+*/
 .hero-subtitle {
   font-size: 44px;
   color: #0033a1;
-  font-weight: 700;
+  font-weight: 700; /* Bold */
   text-align: center;
   letter-spacing: 1.5px;
-  margin: 8px 0 0 0;
+  margin: 8px 0 0 0; /* Pequeño margen superior */
   z-index: 2;
   position: relative;
 }
 
-/* Opcional: mejora responsividad en pantallas pequeñas */
+/* Responsive para la sección héroe en pantallas pequeñas (hasta 900px). */
 @media (max-width: 900px) {
   .hero-title {
-    font-size: 48px;
+    font-size: 48px; /* Reducimos tamaño del título */
   }
   .telefono-img {
-    height: 82px;
+    height: 82px; /* Reducimos tamaño de la imagen del teléfono */
   }
   .hero-subtitle {
-    font-size: 24px;
+    font-size: 24px; /* Reducimos tamaño del subtítulo */
   }
+}
+
+/* ... (tu CSS existente) ... */ /* Este comentario es un placeholder, lo quito si no hay más CSS existente antes del modal */
+
+/* ----------- CONFIRMATION MODAL ----------- */
+/* Estilos para el modal de confirmación genérico. */
+
+/* Overlay del modal.
+   Cubre toda la pantalla con un fondo semitransparente.
+   Flexbox para centrar el contenido del modal.
+   Aparece con una animación de fadeIn.
+*/
+.modal-overlay {
+  position: fixed; /* Fijo en la pantalla */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.65); /* Negro semitransparente, un poco más oscuro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Muy alto para estar encima de todo */
+  opacity: 0; /* Comienza invisible para la animación */
+  animation: fadeInOverlay 0.3s ease-out forwards; /* 'forwards' mantiene el estado final */
+  padding: 15px; /* Evita que el modal toque los bordes en pantallas muy pequeñas */
+}
+
+/* Contenido del modal.
+   Tarjeta blanca con bordes redondeados, sombra y padding.
+   Ancho máximo para evitar que sea demasiado grande en pantallas anchas.
+   Aparece con una animación "pop-in" con rebote.
+*/
+.modal-content {
+  background-color: var(--white);
+  padding: 30px 35px; /* Padding interno generoso */
+  border-radius: 16px; /* Bordes más redondeados */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Sombra similar a .form-card */
+  text-align: center; /* Centra el texto y los botones */
+  width: 100%; /* Ocupa el ancho disponible dentro del padding del overlay */
+  max-width: 420px; /* Ancho máximo del modal */
+  transform: scale(0.8) translateY(30px); /* Estado inicial para la animación */
+  opacity: 0;
+  animation: popInModalWithBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0.1s; /* Pequeño retraso para que aparezca después del overlay */
+}
+
+/* Animación para el fadeIn del overlay. */
+@keyframes fadeInOverlay {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animación "pop-in" con rebote para el contenido del modal.
+   La curva cúbica `cubic-bezier(0.34, 1.56, 0.64, 1)` es clave para el efecto de rebote.
+*/
+@keyframes popInModalWithBounce {
+  0% {
+    transform: scale(0.8) translateY(30px);
+    opacity: 0;
+  }
+  60% { /* Punto intermedio para el rebote: escala un poco más y sube */
+    transform: scale(1.05) translateY(-5px);
+    opacity: 1;
+  }
+  100% { /* Estado final: escala normal y posición final */
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Título del modal.
+   Fuente más grande, color rosa principal y margen inferior.
+*/
+.modal-title {
+  font-size: 1.75rem;
+  color: var(--pink-main);
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-weight: 700; /* Bold */
+}
+
+/* Mensaje del modal.
+   Fuente un poco más grande que el texto normal, color gris oscuro.
+   Margen inferior y altura de línea para mejor legibilidad.
+*/
+.modal-message {
+  font-size: 1.05rem;
+  color: var(--grey-dark);
+  margin-bottom: 30px;
+  line-height: 1.6; /* Espacio entre líneas */
+}
+
+/* Contenedor para los botones de acción del modal.
+   Centrados y con espacio entre ellos.
+*/
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Más espacio entre botones */
+}
+
+/* Estilo base para los botones del modal.
+   Padding generoso, bordes redondeados, sin borde visible.
+   Transiciones para hover y sombra.
+*/
+.modal-button {
+  padding: 12px 30px; /* Botones más grandes */
+  border-radius: 25px; /* Botones bien redondeados */
+  border: none;
+  font-size: 1rem;
+  font-weight: 600; /* Semi-bold */
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1); /* Sombra sutil */
+}
+
+/* Efecto hover para los botones del modal:
+   Se levantan un poco y la sombra se intensifica.
+*/
+.modal-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.18);
+}
+
+/* Botón de confirmación (ej. "Aceptar", "Sí").
+   Fondo rosa principal y texto blanco.
+*/
+.modal-button.confirm {
+  background-color: var(--pink-main);
+  color: white;
+}
+.modal-button.confirm:hover {
+  background-color: #d16ca9; /* Rosa un poco más oscuro en hover */
+}
+
+/* Botón de cancelación (ej. "Cancelar", "No").
+   Fondo gris claro y texto oscuro para contraste.
+*/
+.modal-button.cancel {
+  background-color: #e9e9e9;
+  color: #555;
+  /* border: 1px solid #ccc; <- Opcional: borde sutil si se prefiere */
+}
+.modal-button.cancel:hover {
+  background-color: #dcdcdc; /* Gris un poco más oscuro en hover */
+}
+
+/* Efecto al hacer clic en los botones del modal:
+   Vuelven a su posición original y la sombra se reduce.
+   Da un feedback de "presionado".
+*/
+.modal-button:active {
+  transform: translateY(0px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+
+/*FONDO HOME*/
+/* Animación para la transición de imágenes de fondo en la Home.
+   Define una secuencia de imágenes que cambian en porcentajes de la duración total.
+   Esto crea un slideshow de fondos.
+*/
+@keyframes backgroundTransition {
+  0%   { background-image: url('./assets/backgrounds/transicion_1.png'); }
+  9%   { background-image: url('./assets/backgrounds/transicion_2.png'); } /* Cada ~1.35s para 15s total */
+  18%  { background-image: url('./assets/backgrounds/transicion_3.png'); }
+  27%  { background-image: url('./assets/backgrounds/transicion_4.png'); }
+  36%  { background-image: url('./assets/backgrounds/transicion_5.png'); }
+  45%  { background-image: url('./assets/backgrounds/transicion_6.png'); }
+  54%  { background-image: url('./assets/backgrounds/transicion_7.png'); }
+  63%  { background-image: url('./assets/backgrounds/transicion_8.png'); }
+  72%  { background-image: url('./assets/backgrounds/transicion_9.png'); }
+  81%  { background-image: url('./assets/backgrounds/transicion_10.png'); }
+  90%  { background-image: url('./assets/backgrounds/transicion_11.png'); }
+  100% { background-image: url('./assets/backgrounds/transicion_1.png'); } /* Vuelve al inicio para bucle infinito */
+}
+
+/* Contenedor para el fondo animado.
+   Se posiciona absolutamente para cubrir toda la pantalla, detrás del contenido.
+   Aplica la animación backgroundTransition.
+   z-index: -1 lo coloca detrás de todo.
+   NOTA: Si .home-container ya tiene un background-image y esta animación se aplica
+   a un elemento hijo, asegurarse de que .home-container tenga un fondo transparente
+   o que este .animated-background esté correctamente posicionado dentro de .home-container.
+   Si .animated-background es el que debe tener la transición, entonces .home-container
+   no necesitaría la propiedad `transition: background-image`.
+*/
+.animated-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1; /* Detrás de todo el contenido de .home-container */
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  animation: backgroundTransition 15s infinite; /* 15 segundos de duración, se repite infinitamente */
 }
