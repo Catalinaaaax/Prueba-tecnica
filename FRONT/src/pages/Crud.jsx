@@ -25,7 +25,7 @@ const CrudPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_URL}/api/concesionarios`);
+        const response = await fetch(`${API_URL}/api/concesionarios/`);
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
         }
@@ -70,7 +70,7 @@ const CrudPage = () => {
         responseData = await response.json();
         setRows(rows.map(row => (row.id === responseData.id ? responseData : row)));
       } else {
-        response = await fetch(`${API_URL}/api/concesionarios`, {
+         response = await fetch(`${API_URL}/api/concesionarios/`, { // Añadida barra diagonal al final
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
