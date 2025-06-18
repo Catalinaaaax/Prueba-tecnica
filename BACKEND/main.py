@@ -26,7 +26,7 @@ app = FastAPI(
 
 # Configure CORS
 origins = [
-    "https://catalinaaaax.github.io",
+    "https://catalinaaaax.github.io/Prueba-tecnica/",
       "https://prueba-tecnica-msk5.onrender.com", 
     
 ]
