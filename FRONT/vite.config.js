@@ -6,11 +6,12 @@ export default defineConfig({
   plugins: [react()],
   base: '/Prueba-tecnica/',
   build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        '404': resolve(__dirname, 'index.html'),
-      }
-    }
+    // Elimina o comenta esta sección para que Vite maneje index.html como la plantilla principal
+    // rollupOptions: {
+    //   input: {
+    //     main: resolve(__dirname, 'index.html'),
+    //     '404': resolve(__dirname, 'index.html'),
+    //   }
+    // }
   }
 })
