@@ -849,6 +849,58 @@ body {
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 
+/* --- ANIMACIONES DIVERTIDAS ADICIONALES PARA EL MODAL DE CONFIRMACIÓN --- */
+
+/* Animación para el botón de confirmar en el modal al hacer clic */
+@keyframes modalConfirmWiggle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.05) rotate(-4deg); } /* Gira a la izquierda y agranda un poco */
+  50% { transform: scale(1.05) rotate(4deg); }  /* Gira a la derecha y agranda un poco */
+  75% { transform: scale(1.02) rotate(-2deg); }  /* Pequeña corrección */
+}
+
+/* Aplicamos la animación de wiggle al botón de confirmar del modal cuando está activo */
+.modal-button.confirm:active {
+  /* Mantenemos la sombra de presionado pero la animación controlará el transform */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  animation: modalConfirmWiggle 0.4s ease-in-out;
+  /* El transform: translateY(0px) original de :active se omite si la animación lo maneja */
+}
+
+/* Animación para el contenido del modal cuando desaparece de forma divertida */
+@keyframes modalDisappearFun {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(15deg) translateY(100px); /* Se encoge, rota y cae */
+    visibility: hidden; /* Importante para que no sea interactuable después */
+  }
+}
+
+/* Animación para el overlay del modal cuando desaparece */
+@keyframes fadeOutOverlay {
+  to {
+    opacity: 0;
+    visibility: hidden; /* Asegura que no sea interactuable */
+  }
+}
+
+/* 
+  Clases que deberás añadir con JavaScript al modal cuando quieras que desaparezca
+  con estas animaciones (por ejemplo, después de una eliminación exitosa).
+*/
+.modal-content.disappearing-fun {
+  animation: modalDisappearFun 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+.modal-overlay.disappearing-fun {
+  animation: fadeOutOverlay 0.5s ease-out forwards;
+  animation-delay: 0.1s; /* Opcional: pequeño retraso para que el contenido empiece a desaparecer primero */
+}
+
 /*FONDO HOME*/
 /* Animación para la transición de imágenes de fondo en la Home.
    Define una secuencia de imágenes que cambian en porcentajes de la duración total.
