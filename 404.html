@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirigiendo...</title>
+    <script type="text/javascript">
+      // Guarda la URL completa a la que se intentó acceder y causó el 404
+      sessionStorage.redirect = window.location.href;
+      
+      // Redirige a la raíz de la aplicación en el subdirectorio.
+      // Asegúrate de que "/Prueba-tecnica/" coincida con el `basename` de tu aplicación.
+      var basePath = "/Prueba-tecnica/"; 
+      window.location.replace(window.location.protocol + '//' + window.location.host + basePath + (window.location.search || '') + (window.location.hash || ''));
+    </script>
+    <!-- Comentarios para asegurar que el archivo sea > 512 bytes para compatibilidad con IE (aunque menos crítico hoy) -->
+    <!-- Relleno Relleno Relleno Relleno Relleno Relleno Relleno Relleno Relleno Relleno -->
+    <!-- Relleno Relleno Relleno Relleno Relleno Relleno Relleno Relleno Relleno Relleno -->
+  </head>
+  <body>
+    <p>Si no eres redirigido automáticamente, <a id="redirect-link" href="/Prueba-tecnica/">haz clic aquí</a>.</p>
+    <script>document.getElementById('redirect-link').href = "/Prueba-tecnica/" + (window.location.search || '') + (window.location.hash || '');</script>
+  </body>
+</html>
