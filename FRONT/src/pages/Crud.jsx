@@ -19,6 +19,10 @@ const CrudPage = () => {
   const [isLoading, setIsLoading] = useState(true); // Para carga inicial de datos
   const [isSaving, setIsSaving] = useState(false);   // Para estado de envío del formulario
   const [error, setError] = useState(null);
+  // Estados para el modal de confirmación de eliminación
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [itemPendingDeletion, setItemPendingDeletion] = useState(null);
+  const [isModalClosing, setIsModalClosing] = useState(false); // Para la animación de cierre del modal
 
   useEffect(() => {
     const fetchConcesionarios = async () => {
@@ -107,18 +111,31 @@ const CrudPage = () => {
     setIsAnyRowEditing(false);
   };
 
+  // Inicia el proceso de eliminación mostrando el modal de confirmación
   const handleDelete = async idx => {
     const recordToDelete = rows[idx];
     if (!recordToDelete || !recordToDelete.id) {
       alert("Error: No se puede eliminar un registro sin ID.");
       return;
     }
+    setItemPendingDeletion(recordToDelete);
+    setShowConfirmDeleteModal(true);
+    setIsModalClosing(false); // Asegurar que el modal no esté en estado de cierre al abrir
+  };
 
-    if (window.confirm(`¿Está seguro de que desea eliminar el concesionario ${recordToDelete.marca} - ${recordToDelete.aspirante}?`)) {
-      setIsSaving(true); // Usar isSaving también para la operación de borrado para deshabilitar botones
-      setError(null);
+  // Ejecuta la eliminación después de la confirmación en el modal
+  const executeDelete = async () => {
+    if (!itemPendingDeletion) return;
+
+    setIsModalClosing(true); // Inicia la animación de cierre del modal
+    setIsSaving(true); // Bloquear otros botones mientras se procesa
+    setError(null);
+
+    // Esperar a que la animación de cierre del modal (0.6s) casi termine antes de ocultarlo y procesar
+    setTimeout(async () => {
+      setShowConfirmDeleteModal(false); // Oculta el modal del DOM
       try {
-        const response = await fetch(`${API_URL}/api/concesionarios/${recordToDelete.id}`, {
+        const response = await fetch(`${API_URL}/api/concesionarios/${itemPendingDeletion.id}`, {
           method: 'DELETE',
         });
         if (!response.ok) {
@@ -126,18 +143,32 @@ const CrudPage = () => {
           try { errorBody = await response.text(); } catch (e) { /* ignorar */ }
           throw new Error(`Error al eliminar: ${response.status} ${response.statusText}. ${errorBody}`);
         }
-        setRows(rows.filter(row => row.id !== recordToDelete.id));
-        if (form.id === recordToDelete.id) {
+        setRows(rows.filter(row => row.id !== itemPendingDeletion.id));
+        // Si el formulario estaba editando el ítem eliminado, resetear formulario
+        if (form.id === itemPendingDeletion.id) {
           handleCancel();
         }
       } catch (err) {
         console.error("Error al eliminar el registro:", err);
         setError(err.message);
-        alert(`Error: ${err.message}`);
+        alert(`Error: ${err.message}`); // Podrías usar un modal de error aquí también
       } finally {
         setIsSaving(false);
+        setItemPendingDeletion(null); // Limpiar el ítem pendiente
+        // setIsModalClosing(false); // Se resetea al abrir el modal la próxima vez
       }
-    }
+    }, 500); // Un poco menos que la animación para que el cambio de estado no corte la animación visual
+  };
+
+  // Cancela la acción de eliminación desde el modal
+  const cancelDeleteAction = () => {
+    setIsModalClosing(true); // Inicia la animación de cierre
+    // Esperar a que la animación de cierre del modal (0.6s) termine antes de ocultarlo
+    setTimeout(() => {
+      setShowConfirmDeleteModal(false);
+      setItemPendingDeletion(null);
+      // setIsModalClosing(false); // Se resetea al abrir el modal la próxima vez
+    }, 600);
   };
 
   return (
@@ -177,6 +208,33 @@ const CrudPage = () => {
           <img src={ImagoLogotipo} alt="Motivion Logotipo" className="imagotipo-animated" style={{ width: '200px', marginLeft: '-480px' }} /> {/* Ajusta '-50px' para moverla más a la izquierda desde el centro */}
         </div>
       </div>
+
+      {/* Modal de Confirmación de Eliminación */}
+      {showConfirmDeleteModal && (
+        <div className={`modal-overlay ${isModalClosing ? 'disappearing-fun' : ''}`}>
+          <div className={`modal-content ${isModalClosing ? 'disappearing-fun' : ''}`}>
+            <h2 className="modal-title">¡Confirmar Eliminación!</h2>
+            <p className="modal-message">
+              ¿Estás realmente seguro de que quieres eliminar a <strong>{itemPendingDeletion?.aspirante}</strong>
+              {' de la marca '}
+              <strong>{itemPendingDeletion?.marca}</strong>?
+              <br />Esta acción no se puede deshacer.
+            </p>
+            <div className="modal-actions">
+              <button
+                className="modal-button cancel"
+                onClick={cancelDeleteAction}
+                disabled={isSaving || isModalClosing}
+              >
+                Cancelar
+              </button>
+              <button className="modal-button confirm" onClick={executeDelete} disabled={isSaving || isModalClosing}>
+                Sí, Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
