@@ -5,12 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/Imagologo_motion.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Prueba tecnica</title>
+    <script type="text/javascript">
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect; // Limpia la variable para usos futuros
+        if (redirect && redirect !== window.location.href) {
+          // Si hay una URL guardada y no es la actual (que sería la raíz de la SPA después de la redirección del 404)
+          // Reemplaza el estado del historial con la URL original.
+          // Esto actualiza la barra de direcciones sin recargar la página.
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/Prueba-tecnica/assets/404-DgkO1nY7.js"></script>
-    <link rel="stylesheet" crossorigin href="/Prueba-tecnica/assets/404-FvOCvLkj.css">
+    <script type="module" crossorigin src="/Prueba-tecnica/assets/index-DeQzCUaJ.js"></script>
+    <link rel="stylesheet" crossorigin href="/Prueba-tecnica/assets/index-FvOCvLkj.css">
   </head>
   <body>
-    <div id="root"></div>
     <div id="root"></div>
   </body>
 </html>
