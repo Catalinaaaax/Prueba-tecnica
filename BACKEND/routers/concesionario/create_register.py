@@ -6,11 +6,6 @@ from fastapi import HTTPException, status # Importar HTTPException y status
 # Importar el modelo SQLAlchemy de Concesionario
 from models.concesionario import Concesionario as ConcesionarioModel # Alias para evitar colisión de nombres
 
-# Importar los esquemas Pydantic desde el módulo de esquemas centralizado
-# Asegúrate de que estos esquemas estén definidos en schemas/concesionario.py
-# from schemas.concesionario import ConcesionarioCreateSchema, ConcesionarioDisplaySchema, ConcesionarioResponse
-# Por ahora, para que el código sea autocontenido para el ejemplo, los re-declararé aquí,
-# pero la mejor práctica es importarlos.
 from pydantic import BaseModel
 
 class ConcesionarioCreateSchema(BaseModel):

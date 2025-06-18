@@ -61,7 +61,7 @@ const CrudPage = () => {
       let responseData;
 
       if (form.id) {
-        response = await fetch(`${API_URL}/concesionarios/${form.id}`, {
+        response = await fetch(`${API_URL}/api/concesionarios/${form.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -70,7 +70,7 @@ const CrudPage = () => {
         responseData = await response.json();
         setRows(rows.map(row => (row.id === responseData.id ? responseData : row)));
       } else {
-        response = await fetch(`${API_URL}/concesionarios`, {
+        response = await fetch(`${API_URL}/api/concesionarios`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -118,7 +118,7 @@ const CrudPage = () => {
       setIsSaving(true); // Usar isSaving también para la operación de borrado para deshabilitar botones
       setError(null);
       try {
-        const response = await fetch(`${API_URL}/concesionarios/${recordToDelete.id}`, {
+        const response = await fetch(`${API_URL}/api/concesionarios/${recordToDelete.id}`, {
           method: 'DELETE',
         });
         if (!response.ok) {

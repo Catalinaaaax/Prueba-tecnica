@@ -48,13 +48,3 @@ app.include_router(cr_router, prefix="/api") # Added /api prefix to match fronte
 async def root():
     return {"message": "Bienvenido a la API de Prueba Fullstack"}
 
-# Para ejecutar esta aplicación (guarda este archivo como main.py en la carpeta BACKEND):
-# Abre tu terminal en la carpeta BACKEND y ejecuta:
-# uvicorn main:app --reload
-#
-# Luego puedes enviar una petición POST a http://127.0.0.1:8000/api/concesionarios/
-# con un cuerpo JSON como:
-# {
-#   "nombre": "Concesionario XYZ",
-#   "direccion": "Avenida Siempre Viva 742"
-# }
