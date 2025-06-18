@@ -8,7 +8,7 @@ import IconCancelarBoton from "../assets/Icon_cancelar.svg";   // Icono para el 
 import '../index.css';
 
 
-const API_URL = 'https://prueba-tecnica-msk5.onrender.com/api';
+const API_URL = 'https://prueba-tecnica-msk5.onrender.com';
 const initialFormState = { id: null, marca: '', sucursal: '', aspirante: '' };
 
 const CrudPage = () => {
@@ -25,7 +25,7 @@ const CrudPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_URL}/concesionarios`);
+        const response = await fetch(`${API_URL}/api/concesionarios`);
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
         }

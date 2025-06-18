@@ -26,7 +26,8 @@ app = FastAPI(
 
 # Configure CORS
 origins = [
-    "http://localhost:5173",  # Your frontend origin
+    "https://catalinaaaax.github.io/Prueba-tecnica/",
+      "https://prueba-tecnica-msk5.onrender.com",  # Your frontend origin
     # You can add other origins here, like your deployed frontend URL
 ]
 

@@ -80,7 +80,7 @@ FRONT/
 ## Variables de Entorno
 
 La aplicación se conecta a una API backend. La URL base de la API está definida en `src/pages/Crud.jsx` como:
-`const API_URL = 'http://localhost:8000/api';`
+`const API_URL = 'https://prueba-tecnica-msk5.onrender.com';`
 
 
 
